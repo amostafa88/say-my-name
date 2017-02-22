@@ -1,10 +1,12 @@
-node {
-  stage 'Checkout'
+stage("Checkout") {
+  //stage 'Checkout'
   
   checkout scm
 
   //def mvnHome = tool 'M3'
   env.PATH = "${tool 'M3'}/bin:${env.PATH}"
+  
+  env.JAVA_HOME = "${tool 'jdk'}"
 
   stage 'Build the JAR'
   
