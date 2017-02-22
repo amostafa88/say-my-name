@@ -1,9 +1,10 @@
 node {
   stage 'Checkout'
+  
   checkout scm
 
   //def mvnHome = tool 'M3'
-  env.PATH = "${tool 'apache-maven-3.3.9'}/bin:${env.PATH}"
+  env.PATH = "${tool 'M3'}/bin:${env.PATH}"
 
   stage 'Build the JAR'
   
@@ -11,13 +12,17 @@ node {
   sh "mvn clean package"
   
   step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+}
 
+node {
   stage "Build docker image"
   def pom = readMavenPom file: 'pom.xml'
   def appVersion = pom.version
   def imageTag = "heshamm/say-my-name:${appVersion}"
   def dockerImage = docker.build imageTag
+}
 
+node {
   stage "Publish docker images to docker registry"
   docker.withRegistry("https://registry.hub.docker.com", "docker-registry") {
       dockerImage.push()
