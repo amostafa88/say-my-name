@@ -12,17 +12,13 @@ node {
   sh "mvn clean package"
   
   //step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
-}
 
-node {
   stage "Build docker image"
   def pom = readMavenPom file: 'pom.xml'
   def appVersion = pom.version
   def imageTag = "heshamm/say-my-name:${appVersion}"
   def dockerImage = docker.build imageTag
-}
 
-node {
   stage "Publish docker images to docker registry"
   docker.withRegistry("https://registry.hub.docker.com", "docker-registry") {
       dockerImage.push()
