@@ -3,8 +3,8 @@ node {
   
   checkout scm
 
-  //def mvnHome = tool 'M3'
-  env.PATH = "${tool 'M3'}/bin:${env.PATH}"
+  def mvnHome = tool 'M3'
+  //env.PATH = "${tool 'M3'}/bin:${env.PATH}"
   
   stage 'Build the JAR'
   
