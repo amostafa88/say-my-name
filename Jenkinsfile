@@ -8,9 +8,9 @@ node {
   
   stage 'Build the JAR'
   
-  //sh "${mvnHome}/bin/mvn -Dmaven.test.failure.ignore clean package"
-  sh "mvn clean package"
+  sh "${mvnHome}/bin/mvn -Dmaven.test.failure.ignore clean package"
+  //sh "mvn clean package"
   
-  //step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+  step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
 
 }
