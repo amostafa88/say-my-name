@@ -3,12 +3,12 @@ node {
   
   checkout scm
 
-  def mvnHome = tool 'M3'
+  //def mvnHome = tool 'M3'
   //env.PATH = "${tool 'M3'}/bin:${env.PATH}"
   
-  stage 'Build the JAR'
+ // stage 'Build the JAR'
   
-  sh "${mvnHome}/bin/mvn -Dmaven.test.failure.ignore clean package"
+ // sh "${mvnHome}/bin/mvn -Dmaven.test.failure.ignore clean package"
   //sh "mvn clean package"
   
   //sh 'cp target/*.jar /tmp/'
@@ -21,14 +21,14 @@ node {
   def pom = readMavenPom file: 'pom.xml'
   def appVersion = pom.version
   def imageTag = "amostafa88/say-my-name:${appVersion}"
-  def dockerImage = docker.build imageTag
+  //def dockerImage = docker.build imageTag
 
   stage "Publish docker images to docker registry"
   docker.withRegistry("https://registry.hub.docker.com", "docker-registry") {
       dockerImage.push()
       switch (env.BRANCH_NAME) {
         case "staging":
-            dockerImage.push 'staging'
+            //dockerImage.push 'staging'
             stage "Deploying images to Kubernetes cluster"
             // Create namespace if it doesn't exist
             sh("kubectl get ns staging || kubectl create ns staging")
