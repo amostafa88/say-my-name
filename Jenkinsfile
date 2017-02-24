@@ -3,19 +3,16 @@ node {
   
   checkout scm
 
-  //def mvnHome = tool 'M3'
+  def mvnHome = tool 'M3'
   //env.PATH = "${tool 'M3'}/bin:${env.PATH}"
   
- // stage 'Build the JAR'
-  
- // sh "${mvnHome}/bin/mvn -Dmaven.test.failure.ignore clean package"
+  stage 'Build the JAR'
+  sh "${mvnHome}/bin/mvn -Dmaven.test.failure.ignore clean package"
   //sh "mvn clean package"
   
   //sh 'cp target/*.jar /tmp/'
-                  
-  
- // step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
- // step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+  // step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
+  // step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
 
   stage "Build docker image"
   def pom = readMavenPom file: 'pom.xml'
@@ -25,10 +22,10 @@ node {
 
   stage "Publish docker images to docker registry"
   docker.withRegistry("https://registry.hub.docker.com", "docker-registry") {
-      //dockerImage.push()
+      dockerImage.push()
       switch (env.BRANCH_NAME) {
         case "staging":
-            //dockerImage.push 'staging'
+            dockerImage.push 'staging'
             stage "Deploying images to Kubernetes cluster"
             // Create namespace if it doesn't exist
             sh("kubectl get ns staging || kubectl create ns staging")
@@ -40,7 +37,7 @@ node {
             sh("curl http://147.75.108.49:`kubectl --namespace=staging get service/say-my-name-frontend-staging --output=json | jq -r '.spec.ports[0].nodePort'`/say/there")
             break
         case "master":
-            //dockerImage.push 'production'
+            dockerImage.push 'production'
             stage "Deploying images to Kubernetes cluster"
             // Create namespace if it doesn't exist
             sh("kubectl get ns production || kubectl create ns production")
