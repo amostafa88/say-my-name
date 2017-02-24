@@ -1,4 +1,7 @@
 node {
+  stage 'Checkout'
+  
+  checkout scm
   
   stage "Build docker image"
   def pom = readMavenPom file: 'pom.xml'
