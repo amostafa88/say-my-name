@@ -20,7 +20,7 @@ node {
   stage "Build docker image"
   def pom = readMavenPom file: 'pom.xml'
   def appVersion = pom.version
-  def imageTag = "heshamm/say-my-name:${appVersion}"
+  def imageTag = "amostafa88/say-my-name:${appVersion}"
   def dockerImage = docker.build imageTag
 
   stage "Publish docker images to docker registry"
@@ -32,24 +32,24 @@ node {
             stage "Deploying images to Kubernetes cluster"
             // Create namespace if it doesn't exist
             sh("kubectl get ns staging || kubectl create ns staging")
-            sh("sed -i.bak 's#heshamm/say-my-name:latest#${imageTag}#' ./k8s/deployments/staging/*.yaml")
-            sh("sed -i.bak 's#heshamm/say-my-name:latest#${imageTag}#' ./k8s/services/staging/*.yaml")
+            sh("sed -i.bak 's#amostafa88/say-my-name:latest#${imageTag}#' ./k8s/deployments/staging/*.yaml")
+            sh("sed -i.bak 's#amostafa88/say-my-name:latest#${imageTag}#' ./k8s/services/staging/*.yaml")
             sh("kubectl --namespace=staging apply -f k8s/services/staging")
             sh("kubectl --namespace=staging apply -f k8s/deployments/staging")
             def serviceName = "say-my-name-frontend-staging"
-            sh("echo http://`kubectl --namespace=staging get service/${serviceName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${serviceName}")
+            sh("curl http://47.88.189.212:`kubectl --namespace=staging get service/say-my-name-frontend-staging --output=json | jq -r '.spec.ports[0].nodePort'` > ${serviceName}")
             break
         case "master":
             dockerImage.push 'production'
             stage "Deploying images to Kubernetes cluster"
             // Create namespace if it doesn't exist
             sh("kubectl get ns production || kubectl create ns production")
-            sh("sed -i.bak 's#heshamm/say-my-name:latest#${imageTag}#' ./k8s/deployments/production/*.yaml")
-            sh("sed -i.bak 's#heshamm/say-my-name:latest#${imageTag}#' ./k8s/services/production/*.yaml")
+            sh("sed -i.bak 's#amostafa88/say-my-name:latest#${imageTag}#' ./k8s/deployments/production/*.yaml")
+            sh("sed -i.bak 's#amostafa88/say-my-name:latest#${imageTag}#' ./k8s/services/production/*.yaml")
             sh("kubectl --namespace=production apply -f k8s/services/production")
             sh("kubectl --namespace=production apply -f k8s/deployments/production")
             def serviceName = "say-my-name-frontend-production"
-            sh("echo http://`kubectl --namespace=production get service/${serviceName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${serviceName}")
+            sh("curl http://47.88.189.212:`kubectl --namespace=staging get service/say-my-name-frontend-production--output=json | jq -r '.spec.ports[0].nodePort'` > ${serviceName}")
             break
       }
   }
