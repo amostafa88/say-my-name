@@ -25,7 +25,7 @@ node {
 
   stage "Publish docker images to docker registry"
   docker.withRegistry("https://registry.hub.docker.com", "docker-registry") {
-      dockerImage.push()
+      //dockerImage.push()
       switch (env.BRANCH_NAME) {
         case "staging":
             //dockerImage.push 'staging'
@@ -40,7 +40,7 @@ node {
             sh("curl http://47.88.189.212:`kubectl --namespace=staging get service/say-my-name-frontend-staging --output=json | jq -r '.spec.ports[0].nodePort'` > ${serviceName}")
             break
         case "master":
-            dockerImage.push 'production'
+            //dockerImage.push 'production'
             stage "Deploying images to Kubernetes cluster"
             // Create namespace if it doesn't exist
             sh("kubectl get ns production || kubectl create ns production")
