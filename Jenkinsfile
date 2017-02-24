@@ -18,7 +18,7 @@ node {
   def pom = readMavenPom file: 'pom.xml'
   def appVersion = pom.version
   def imageTag = "amostafa88/say-my-name:${appVersion}"
-  //def dockerImage = docker.build imageTag
+  def dockerImage = docker.build imageTag
 
   stage "Publish docker images to docker registry"
   docker.withRegistry("https://registry.hub.docker.com", "docker-registry") {
