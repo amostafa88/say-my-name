@@ -34,7 +34,7 @@ node {
             sh("kubectl --namespace=staging apply -f k8s/services/staging")
             sh("kubectl --namespace=staging apply -f k8s/deployments/staging")
             def serviceName = "say-my-name-frontend-staging"
-            sh("curl http://147.75.108.49:`kubectl --namespace=staging get service/say-my-name-frontend-staging --output=json | jq -r '.spec.ports[0].nodePort'`/say/there")
+            //sh("curl http://147.75.108.49:`kubectl --namespace=staging get service/say-my-name-frontend-staging --output=json | jq -r '.spec.ports[0].nodePort'`/say/there")
             break
         case "master":
             dockerImage.push 'production'
@@ -46,7 +46,7 @@ node {
             sh("kubectl --namespace=production apply -f k8s/services/production")
             sh("kubectl --namespace=production apply -f k8s/deployments/production")
             def serviceName = "say-my-name-frontend-production"
-            sh("curl http://147.75.108.49:`kubectl --namespace=staging get service/say-my-name-frontend-production --output=json | jq -r '.spec.ports[0].nodePort'`/say/there")
+            //sh("curl http://147.75.108.49:`kubectl --namespace=staging get service/say-my-name-frontend-production --output=json | jq -r '.spec.ports[0].nodePort'`/say/there")
             break
       }
   }
