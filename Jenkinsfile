@@ -1,6 +1,5 @@
 node {
-  def pom = readMavenPom file: 'pom.xml'
-  def appVersion = pom.version
+
   
   stage 'Checkout'
   
@@ -13,6 +12,8 @@ node {
   sh "${mvnHome}/bin/mvn -Dmaven.test.failure.ignore clean package"
   //sh "mvn clean package"
   
+  def pom = readMavenPom file: 'pom.xml'
+  def appVersion = pom.version
   sh 'cp target/say-my-name-${appVersion}.jar /tmp/app.jar'
   
   // step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
