@@ -4,6 +4,7 @@ metadata:
   name: say-my-name-backend-production
 spec:
   replicas:
+  minReadySeconds: 10
   template:
     metadata:
       name: backend
