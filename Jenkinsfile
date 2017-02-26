@@ -1,4 +1,7 @@
 node {
+  def pom = readMavenPom file: 'pom.xml'
+  def appVersion = pom.version
+  
   stage 'Checkout'
   
   checkout scm
@@ -10,13 +13,12 @@ node {
   sh "${mvnHome}/bin/mvn -Dmaven.test.failure.ignore clean package"
   //sh "mvn clean package"
   
-  //sh 'cp target/*.jar /tmp/'
+  sh 'cp target/say-my-name-${appVersion}.jar /tmp/app.jar'
+  
   // step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
   // step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
 
   stage "Build docker image"
-  def pom = readMavenPom file: 'pom.xml'
-  def appVersion = pom.version
   def imageTag = "amostafa88/say-my-name:${appVersion}"
   def dockerImage = docker.build imageTag
 

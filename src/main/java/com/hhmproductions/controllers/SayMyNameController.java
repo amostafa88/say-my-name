@@ -23,7 +23,7 @@ public class SayMyNameController {
         String hostName = InetAddress.getLocalHost().getHostName();
         String hostAddress = InetAddress.getLocalHost().getHostAddress();
 
-        return "Hi " + name + "! :))) ........ It's " + hostName + ":" + hostAddress;
+        return "Hi " + name + "! :))) >>>> It's " + hostName + ":" + hostAddress;
     }
 
     @RequestMapping("/**")
