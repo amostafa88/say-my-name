@@ -15,6 +15,7 @@ node {
   def pom = readMavenPom file: 'pom.xml'
   def appVersion = pom.version
   //sh 'cp target/say-my-name-${appVersion}.jar /tmp/app.jar'
+  sh 'mkdir tmp'
   sh 'cp target/*.jar tmp/app.jar'
   
   // step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
